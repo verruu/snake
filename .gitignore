@@ -1,2 +1,4 @@
 .aider*
 /.idea/
+/out/
+/ImageResizer.java
