@@ -36,9 +36,9 @@ public class SnakeGame extends JPanel {
     private boolean inGame = true;
 
     private Timer timer;
-    private Image ball;
-    private Image apple;
-    private Image head;
+    private transient Image ball;
+    private transient Image apple;
+    private transient Image head;
 
     public SnakeGame() {
         initBoard();
@@ -61,7 +61,7 @@ public class SnakeGame extends JPanel {
             ImageIcon iia = new ImageIcon(getClass().getResource("/resources/apple.png"));
             apple = iia.getImage();
 
-            ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.jpg"));
+            ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.png"));
             head = iih.getImage();
         } catch (Exception e) {
             System.err.println("Failed to load image resources: " + e.getMessage());
@@ -101,7 +101,7 @@ public class SnakeGame extends JPanel {
 
     private void doDrawing(Graphics g) {
         if (inGame) {
-            g.setColor(Color.GRAY);
+            g.setColor(Color.BLACK);
             g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
             g.drawImage(apple, appleX, appleY, this);
 
