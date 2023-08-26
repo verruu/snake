@@ -4,16 +4,16 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class SnakeGame extends JPanel implements ActionListener {
+public class SnakeGame extends JPanel {
 
     private final int B_WIDTH = 300;
     private final int B_HEIGHT = 300;
@@ -36,41 +36,35 @@ public class SnakeGame extends JPanel implements ActionListener {
     private boolean inGame = true;
 
     private Timer timer;
-    private transient Image ball;
-    private transient Image apple;
-    private transient Image head;
+    private Image ball;
+    private Image apple;
+    private Image head;
 
     public SnakeGame() {
-        
         initBoard();
     }
-    
+
     private void initBoard() {
-
-        addKeyListener(new TAdapter());
-        setBackground(Color.black);
-        setFocusable(true);
-        requestFocus();
-
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setBackground(Color.BLACK);
+        setFocusable(true);
+        addKeyListener(new SnakeKeyListener());
         loadImages();
         initGame();
     }
 
     private void loadImages() {
-
-        ImageIcon iid = new ImageIcon("src/resources/dot.png");
+        ImageIcon iid = new ImageIcon(getClass().getResource("/resources/dot.png"));
         ball = iid.getImage();
 
-        ImageIcon iia = new ImageIcon("src/resources/apple.png");
+        ImageIcon iia = new ImageIcon(getClass().getResource("/resources/apple.png"));
         apple = iia.getImage();
 
-        ImageIcon iih = new ImageIcon("src/resources/head.png");
+        ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.png"));
         head = iih.getImage();
     }
 
     private void initGame() {
-
         dots = 3;
 
         for (int z = 0; z < dots; z++) {
@@ -80,21 +74,28 @@ public class SnakeGame extends JPanel implements ActionListener {
 
         locateApple();
 
-        timer = new Timer(DELAY, this);
+        timer = new Timer(DELAY, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (inGame) {
+                    checkApple();
+                    checkCollision();
+                    move();
+                }
+                repaint();
+            }
+        });
         timer.start();
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         doDrawing(g);
     }
-    
-    private void doDrawing(Graphics g) {
-        
-        if (inGame) {
 
+    private void doDrawing(Graphics g) {
+        if (inGame) {
             g.setColor(Color.GRAY);
             g.fillRect(0, 0, B_WIDTH, B_HEIGHT);
             g.drawImage(apple, apple_x, apple_y, this);
@@ -108,37 +109,29 @@ public class SnakeGame extends JPanel implements ActionListener {
                     g.drawImage(ball, X[z], Y[z], this);
                 }
             }
-
-            Toolkit.getDefaultToolkit().sync();
-
         } else {
-
             gameOver(g);
-        }        
+        }
     }
 
     private void gameOver(Graphics g) {
-        
         String msg = "Game Over";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = getFontMetrics(small);
 
-        g.setColor(Color.white);
+        g.setColor(Color.WHITE);
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - metr.stringWidth(msg)) / 2, B_HEIGHT / 2);
     }
 
     private void checkApple() {
-
         if ((X[0] == apple_x) && (Y[0] == apple_y)) {
-
             dots++;
             locateApple();
         }
     }
 
     private void move() {
-
         for (int z = dots; z > 0; z--) {
             X[z] = X[(z - 1)];
             Y[z] = Y[(z - 1)];
@@ -162,9 +155,7 @@ public class SnakeGame extends JPanel implements ActionListener {
     }
 
     private void checkCollision() {
-
         for (int z = dots; z > 0; z--) {
-
             if ((z > 4) && (X[0] == X[z]) && (Y[0] == Y[z])) {
                 inGame = false;
                 break;
@@ -186,39 +177,21 @@ public class SnakeGame extends JPanel implements ActionListener {
         if (X[0] < 0) {
             inGame = false;
         }
-        
+
         if (!inGame) {
             timer.stop();
         }
     }
 
     private void locateApple() {
-
-        int r = (int) (Math.random() * RAND_POS);
-        apple_x = (r * DOT_SIZE);
-
-        r = (int) (Math.random() * RAND_POS);
-        apple_y = (r * DOT_SIZE);
+        Random random = new Random();
+        apple_x = random.nextInt(RAND_POS) * DOT_SIZE;
+        apple_y = random.nextInt(RAND_POS) * DOT_SIZE;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        if (inGame) {
-
-            checkApple();
-            checkCollision();
-            move();
-        }
-
-        repaint();
-    }
-
-    private class TAdapter extends KeyAdapter {
-
+    private class SnakeKeyListener implements KeyListener {
         @Override
         public void keyPressed(KeyEvent e) {
-
             int key = e.getKeyCode();
 
             if ((key == KeyEvent.VK_LEFT) && (!rightDirection)) {
@@ -244,6 +217,14 @@ public class SnakeGame extends JPanel implements ActionListener {
                 rightDirection = false;
                 leftDirection = false;
             }
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
         }
     }
 }
