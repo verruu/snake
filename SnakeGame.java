@@ -61,7 +61,7 @@ public class SnakeGame extends JPanel {
             ImageIcon iia = new ImageIcon(getClass().getResource("/resources/apple.png"));
             apple = iia.getImage();
 
-            ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.png"));
+            ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.jpg"));
             head = iih.getImage();
         } catch (Exception e) {
             System.err.println("Failed to load image resources: " + e.getMessage());
