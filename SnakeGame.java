@@ -22,8 +22,8 @@ public class SnakeGame extends JPanel implements ActionListener {
     private final int RAND_POS = 29;
     private final int DELAY = 140;
 
-    private final int x[] = new int[ALL_DOTS];
-    private final int y[] = new int[ALL_DOTS];
+    private final int[] X = new int[ALL_DOTS];
+    private final int[] Y = new int[ALL_DOTS];
 
     private int dots;
     private int apple_x;
@@ -36,9 +36,9 @@ public class SnakeGame extends JPanel implements ActionListener {
     private boolean inGame = true;
 
     private Timer timer;
-    private Image ball;
-    private Image apple;
-    private Image head;
+    private transient Image ball;
+    private transient Image apple;
+    private transient Image head;
 
     public SnakeGame() {
         
@@ -73,8 +73,8 @@ public class SnakeGame extends JPanel implements ActionListener {
         dots = 3;
 
         for (int z = 0; z < dots; z++) {
-            x[z] = 50 - z * 10;
-            y[z] = 50;
+            X[z] = 50 - z * 10;
+            Y[z] = 50;
         }
 
         locateApple();
@@ -98,9 +98,9 @@ public class SnakeGame extends JPanel implements ActionListener {
 
             for (int z = 0; z < dots; z++) {
                 if (z == 0) {
-                    g.drawImage(head, x[z], y[z], this);
+                    g.drawImage(head, X[z], Y[z], this);
                 } else {
-                    g.drawImage(ball, x[z], y[z], this);
+                    g.drawImage(ball, X[z], Y[z], this);
                 }
             }
 
@@ -125,7 +125,7 @@ public class SnakeGame extends JPanel implements ActionListener {
 
     private void checkApple() {
 
-        if ((x[0] == apple_x) && (y[0] == apple_y)) {
+        if ((X[0] == apple_x) && (Y[0] == apple_y)) {
 
             dots++;
             locateApple();
@@ -135,24 +135,24 @@ public class SnakeGame extends JPanel implements ActionListener {
     private void move() {
 
         for (int z = dots; z > 0; z--) {
-            x[z] = x[(z - 1)];
-            y[z] = y[(z - 1)];
+            X[z] = X[(z - 1)];
+            Y[z] = Y[(z - 1)];
         }
 
         if (leftDirection) {
-            x[0] -= DOT_SIZE;
+            X[0] -= DOT_SIZE;
         }
 
         if (rightDirection) {
-            x[0] += DOT_SIZE;
+            X[0] += DOT_SIZE;
         }
 
         if (upDirection) {
-            y[0] -= DOT_SIZE;
+            Y[0] -= DOT_SIZE;
         }
 
         if (downDirection) {
-            y[0] += DOT_SIZE;
+            Y[0] += DOT_SIZE;
         }
     }
 
@@ -160,24 +160,25 @@ public class SnakeGame extends JPanel implements ActionListener {
 
         for (int z = dots; z > 0; z--) {
 
-            if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
+            if ((z > 4) && (X[0] == X[z]) && (Y[0] == Y[z])) {
                 inGame = false;
+                break;
             }
         }
 
-        if (y[0] >= B_HEIGHT) {
+        if (Y[0] >= B_HEIGHT) {
             inGame = false;
         }
 
-        if (y[0] < 0) {
+        if (Y[0] < 0) {
             inGame = false;
         }
 
-        if (x[0] >= B_WIDTH) {
+        if (X[0] >= B_WIDTH) {
             inGame = false;
         }
 
-        if (x[0] < 0) {
+        if (X[0] < 0) {
             inGame = false;
         }
         
@@ -189,10 +190,10 @@ public class SnakeGame extends JPanel implements ActionListener {
     private void locateApple() {
 
         int r = (int) (Math.random() * RAND_POS);
-        apple_x = ((r * DOT_SIZE));
+        apple_x = (r * DOT_SIZE);
 
         r = (int) (Math.random() * RAND_POS);
-        apple_y = ((r * DOT_SIZE));
+        apple_y = (r * DOT_SIZE);
     }
 
     @Override

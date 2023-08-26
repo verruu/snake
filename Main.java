@@ -1,4 +1,4 @@
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Main {
 
@@ -6,7 +6,7 @@ public class Main {
         
         JFrame frame = new JFrame();
         frame.add(new SnakeGame());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setTitle("Snake Game");
         frame.pack();
         frame.setLocationRelativeTo(null);
