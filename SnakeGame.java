@@ -23,8 +23,8 @@ public class SnakeGame extends JPanel {
     private static final int RAND_POS = BOARD_WIDTH / DOT_SIZE;
     private static final int DELAY = 140;
 
-    private final int[] x = new int[ALL_DOTS];
-    private final int[] y = new int[ALL_DOTS];
+    private final int[] X = new int[ALL_DOTS];
+    private final int[] Y = new int[ALL_DOTS];
 
     private int dots;
     private int appleX;
@@ -76,8 +76,8 @@ public class SnakeGame extends JPanel {
         foodEaten = 0; // Initialize foodEaten counter to 0
 
         for (int z = 0; z < dots; z++) {
-            x[z] = 50 - z * DOT_SIZE;
-            y[z] = 50;
+            X[z] = 50 - z * DOT_SIZE;
+            Y[z] = 50;
         }
 
         locateApple();
@@ -111,10 +111,10 @@ public class SnakeGame extends JPanel {
             for (int z = 0; z < dots; z++) {
                 if (z == 0) {
                     g.setColor(Color.GREEN);
-                    g.drawImage(head, x[z], y[z], this);
+                    g.drawImage(head, X[z], Y[z], this);
                 } else {
                     g.setColor(Color.WHITE);
-                    g.drawImage(ball, x[z], y[z], this);
+                    g.drawImage(ball, X[z], Y[z], this);
                 }
             }
 
@@ -138,57 +138,34 @@ public class SnakeGame extends JPanel {
     }
 
     private void checkApple() {
-        if ((x[0] == appleX) && (y[0] == appleY)) {
+        if ((X[0] == appleX) && (Y[0] == appleY)) {
             dots++;
             foodEaten++; // Increment foodEaten counter
             locateApple();
         }
     }
 
-    private void move() {
-        for (int z = dots; z > 0; z--) {
-            x[z] = x[(z - 1)];
-            y[z] = y[(z - 1)];
-        }
-
-        if (leftDirection) {
-            x[0] -= DOT_SIZE;
-        }
-
-        if (rightDirection) {
-            x[0] += DOT_SIZE;
-        }
-
-        if (upDirection) {
-            y[0] -= DOT_SIZE;
-        }
-
-        if (downDirection) {
-            y[0] += DOT_SIZE;
-        }
-    }
-
     private void checkCollision() {
         for (int z = dots; z > 0; z--) {
-            if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
+            if ((z > 4) && (X[0] == X[z]) && (Y[0] == Y[z])) {
                 inGame = false;
                 break;
             }
         }
 
-        if (y[0] >= BOARD_HEIGHT) {
+        if (Y[0] >= BOARD_HEIGHT) {
             inGame = false;
         }
 
-        if (y[0] < 0) {
+        if (Y[0] < 0) {
             inGame = false;
         }
 
-        if (x[0] >= BOARD_WIDTH) {
+        if (X[0] >= BOARD_WIDTH) {
             inGame = false;
         }
 
-        if (x[0] < 0) {
+        if (X[0] < 0) {
             inGame = false;
         }
 
@@ -203,10 +180,27 @@ public class SnakeGame extends JPanel {
         }
     }
 
-    private void locateApple() {
-        Random random = new Random();
-        appleX = random.nextInt(RAND_POS) * DOT_SIZE;
-        appleY = random.nextInt(RAND_POS) * DOT_SIZE;
+    private void move() {
+        for (int z = dots; z > 0; z--) {
+            X[z] = X[(z - 1)];
+            Y[z] = Y[(z - 1)];
+        }
+
+        if (leftDirection) {
+            X[0] -= DOT_SIZE;
+        }
+
+        if (rightDirection) {
+            X[0] += DOT_SIZE;
+        }
+
+        if (upDirection) {
+            Y[0] -= DOT_SIZE;
+        }
+
+        if (downDirection) {
+            Y[0] += DOT_SIZE;
+        }
     }
 
     private void restartGame() {
@@ -218,11 +212,17 @@ public class SnakeGame extends JPanel {
         upDirection = false;
         downDirection = false;
         for (int z = 0; z < dots; z++) {
-            x[z] = 50 - z * DOT_SIZE;
-            y[z] = 50;
+            X[z] = 50 - z * DOT_SIZE;
+            Y[z] = 50;
         }
         locateApple();
         timer.start();
+    }
+
+    private void locateApple() {
+        Random random = new Random();
+        appleX = random.nextInt(RAND_POS) * DOT_SIZE;
+        appleY = random.nextInt(RAND_POS) * DOT_SIZE;
     }
 
     private class SnakeKeyListener implements KeyListener {
