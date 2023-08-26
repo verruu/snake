@@ -120,7 +120,7 @@ public class SnakeGame extends JPanel {
             // Draw foodEaten counter in the upper right corner
             g.setColor(Color.WHITE);
             g.setFont(new Font("Helvetica", Font.BOLD, 14));
-            g.drawString("Food Eaten: " + foodEaten, BOARD_WIDTH - 100, 20);
+            g.drawString("" + foodEaten, BOARD_WIDTH - 15, 15);
         } else {
             gameOver(g);
         }
