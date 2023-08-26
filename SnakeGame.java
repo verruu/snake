@@ -15,19 +15,19 @@ import javax.swing.Timer;
 
 public class SnakeGame extends JPanel {
 
-    private final int B_WIDTH = 300;
-    private final int B_HEIGHT = 300;
-    private final int DOT_SIZE = 10;
-    private final int ALL_DOTS = 900;
-    private final int RAND_POS = 29;
-    private final int DELAY = 140;
+    private static final int BOARD_WIDTH = 300;
+    private static final int BOARD_HEIGHT = 300;
+    private static final int DOT_SIZE = 10;
+    private static final int ALL_DOTS = (BOARD_WIDTH * BOARD_HEIGHT) / (DOT_SIZE * DOT_SIZE);
+    private static final int RAND_POS = BOARD_WIDTH / DOT_SIZE;
+    private static final int DELAY = 140;
 
-    private final int[] X = new int[ALL_DOTS];
-    private final int[] Y = new int[ALL_DOTS];
+    private final int[] x = new int[ALL_DOTS];
+    private final int[] y = new int[ALL_DOTS];
 
     private int dots;
-    private int apple_x;
-    private int apple_y;
+    private int appleX;
+    private int appleY;
 
     private boolean leftDirection = false;
     private boolean rightDirection = true;
@@ -45,7 +45,7 @@ public class SnakeGame extends JPanel {
     }
 
     private void initBoard() {
-        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(new SnakeKeyListener());
@@ -54,22 +54,27 @@ public class SnakeGame extends JPanel {
     }
 
     private void loadImages() {
-        ImageIcon iid = new ImageIcon(getClass().getResource("/resources/dot.png"));
-        ball = iid.getImage();
+        try {
+            ImageIcon iid = new ImageIcon(getClass().getResource("/resources/dot.png"));
+            ball = iid.getImage();
 
-        ImageIcon iia = new ImageIcon(getClass().getResource("/resources/apple.png"));
-        apple = iia.getImage();
+            ImageIcon iia = new ImageIcon(getClass().getResource("/resources/apple.png"));
+            apple = iia.getImage();
 
-        ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.png"));
-        head = iih.getImage();
+            ImageIcon iih = new ImageIcon(getClass().getResource("/resources/head.png"));
+            head = iih.getImage();
+        } catch (Exception e) {
+            System.err.println("Failed to load image resources: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void initGame() {
         dots = 3;
 
         for (int z = 0; z < dots; z++) {
-            X[z] = 50 - z * 10;
-            Y[z] = 50;
+            x[z] = 50 - z * DOT_SIZE;
+            y[z] = 50;
         }
 
         locateApple();
@@ -97,16 +102,16 @@ public class SnakeGame extends JPanel {
     private void doDrawing(Graphics g) {
         if (inGame) {
             g.setColor(Color.GRAY);
-            g.fillRect(0, 0, B_WIDTH, B_HEIGHT);
-            g.drawImage(apple, apple_x, apple_y, this);
+            g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
+            g.drawImage(apple, appleX, appleY, this);
 
             for (int z = 0; z < dots; z++) {
                 if (z == 0) {
                     g.setColor(Color.GREEN);
-                    g.drawImage(head, X[z], Y[z], this);
+                    g.drawImage(head, x[z], y[z], this);
                 } else {
                     g.setColor(Color.WHITE);
-                    g.drawImage(ball, X[z], Y[z], this);
+                    g.drawImage(ball, x[z], y[z], this);
                 }
             }
         } else {
@@ -121,11 +126,11 @@ public class SnakeGame extends JPanel {
 
         g.setColor(Color.WHITE);
         g.setFont(small);
-        g.drawString(msg, (B_WIDTH - metr.stringWidth(msg)) / 2, B_HEIGHT / 2);
+        g.drawString(msg, (BOARD_WIDTH - metr.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
     }
 
     private void checkApple() {
-        if ((X[0] == apple_x) && (Y[0] == apple_y)) {
+        if ((x[0] == appleX) && (y[0] == appleY)) {
             dots++;
             locateApple();
         }
@@ -133,48 +138,48 @@ public class SnakeGame extends JPanel {
 
     private void move() {
         for (int z = dots; z > 0; z--) {
-            X[z] = X[(z - 1)];
-            Y[z] = Y[(z - 1)];
+            x[z] = x[(z - 1)];
+            y[z] = y[(z - 1)];
         }
 
         if (leftDirection) {
-            X[0] -= DOT_SIZE;
+            x[0] -= DOT_SIZE;
         }
 
         if (rightDirection) {
-            X[0] += DOT_SIZE;
+            x[0] += DOT_SIZE;
         }
 
         if (upDirection) {
-            Y[0] -= DOT_SIZE;
+            y[0] -= DOT_SIZE;
         }
 
         if (downDirection) {
-            Y[0] += DOT_SIZE;
+            y[0] += DOT_SIZE;
         }
     }
 
     private void checkCollision() {
         for (int z = dots; z > 0; z--) {
-            if ((z > 4) && (X[0] == X[z]) && (Y[0] == Y[z])) {
+            if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
                 inGame = false;
                 break;
             }
         }
 
-        if (Y[0] >= B_HEIGHT) {
+        if (y[0] >= BOARD_HEIGHT) {
             inGame = false;
         }
 
-        if (Y[0] < 0) {
+        if (y[0] < 0) {
             inGame = false;
         }
 
-        if (X[0] >= B_WIDTH) {
+        if (x[0] >= BOARD_WIDTH) {
             inGame = false;
         }
 
-        if (X[0] < 0) {
+        if (x[0] < 0) {
             inGame = false;
         }
 
@@ -185,8 +190,8 @@ public class SnakeGame extends JPanel {
 
     private void locateApple() {
         Random random = new Random();
-        apple_x = random.nextInt(RAND_POS) * DOT_SIZE;
-        apple_y = random.nextInt(RAND_POS) * DOT_SIZE;
+        appleX = random.nextInt(RAND_POS) * DOT_SIZE;
+        appleY = random.nextInt(RAND_POS) * DOT_SIZE;
     }
 
     private class SnakeKeyListener implements KeyListener {
