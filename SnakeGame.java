@@ -171,7 +171,15 @@ public class SnakeGame extends JPanel {
 
         if (!inGame) {
             timer.stop();
-            int choice = JOptionPane.showOptionDialog(null, "Game Over. Do you want to restart?", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    "Game Over. Do you want to restart?",
+                    "Game Over",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    null,
+                    null);
             if (choice == JOptionPane.YES_OPTION) {
                 restartGame();
             } else {
