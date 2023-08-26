@@ -28,6 +28,7 @@ public class SnakeGame extends JPanel {
     private int dots;
     private int appleX;
     private int appleY;
+    private int foodEaten; // Counter for food eaten by the snake
 
     private boolean leftDirection = false;
     private boolean rightDirection = true;
@@ -71,6 +72,7 @@ public class SnakeGame extends JPanel {
 
     private void initGame() {
         dots = 3;
+        foodEaten = 0; // Initialize foodEaten counter to 0
 
         for (int z = 0; z < dots; z++) {
             x[z] = 50 - z * DOT_SIZE;
@@ -114,6 +116,11 @@ public class SnakeGame extends JPanel {
                     g.drawImage(ball, x[z], y[z], this);
                 }
             }
+
+            // Draw foodEaten counter in the upper right corner
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Helvetica", Font.BOLD, 14));
+            g.drawString("Food Eaten: " + foodEaten, BOARD_WIDTH - 100, 20);
         } else {
             gameOver(g);
         }
@@ -132,6 +139,7 @@ public class SnakeGame extends JPanel {
     private void checkApple() {
         if ((x[0] == appleX) && (y[0] == appleY)) {
             dots++;
+            foodEaten++; // Increment foodEaten counter
             locateApple();
         }
     }
