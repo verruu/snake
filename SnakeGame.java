@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -127,7 +128,7 @@ public class SnakeGame extends JPanel {
     }
 
     private void gameOver(Graphics g) {
-        String msg = "Game Over";
+        String msg = "Game Over. Press 'R' to restart or 'Q' to quit.";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = getFontMetrics(small);
 
@@ -193,6 +194,12 @@ public class SnakeGame extends JPanel {
 
         if (!inGame) {
             timer.stop();
+            int choice = JOptionPane.showOptionDialog(null, "Game Over. Do you want to restart?", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (choice == JOptionPane.YES_OPTION) {
+                restartGame();
+            } else {
+                System.exit(0);
+            }
         }
     }
 
@@ -200,6 +207,22 @@ public class SnakeGame extends JPanel {
         Random random = new Random();
         appleX = random.nextInt(RAND_POS) * DOT_SIZE;
         appleY = random.nextInt(RAND_POS) * DOT_SIZE;
+    }
+
+    private void restartGame() {
+        inGame = true;
+        dots = 3;
+        foodEaten = 0;
+        leftDirection = false;
+        rightDirection = true;
+        upDirection = false;
+        downDirection = false;
+        for (int z = 0; z < dots; z++) {
+            x[z] = 50 - z * DOT_SIZE;
+            y[z] = 50;
+        }
+        locateApple();
+        timer.start();
     }
 
     private class SnakeKeyListener implements KeyListener {
@@ -229,6 +252,14 @@ public class SnakeGame extends JPanel {
                 downDirection = true;
                 rightDirection = false;
                 leftDirection = false;
+            }
+
+            if ((key == KeyEvent.VK_R) && (!inGame)) {
+                restartGame();
+            }
+
+            if ((key == KeyEvent.VK_Q) && (!inGame)) {
+                System.exit(0);
             }
         }
 
