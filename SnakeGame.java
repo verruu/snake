@@ -94,12 +94,16 @@ public class SnakeGame extends JPanel implements ActionListener {
         
         if (inGame) {
 
+            g.setColor(Color.GRAY);
+            g.fillRect(0, 0, B_WIDTH, B_HEIGHT);
             g.drawImage(apple, apple_x, apple_y, this);
 
             for (int z = 0; z < dots; z++) {
                 if (z == 0) {
+                    g.setColor(Color.GREEN);
                     g.drawImage(head, X[z], Y[z], this);
                 } else {
+                    g.setColor(Color.WHITE);
                     g.drawImage(ball, X[z], Y[z], this);
                 }
             }
